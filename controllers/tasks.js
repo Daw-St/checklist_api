@@ -78,15 +78,12 @@ export default {
     },
 
     addNewTask: (req, res) => {
-
+        console.log(req);
         Task
             .create({
-                task_name: req.body.name,
-                task_desc: req.body.desc,
-                task_type: req.body.type
-                //task_name: "buy a present",
-                //task_desc: "something special for christmas",
-                //task_type: 0,
+                task_name: req.body.task_name,
+                task_desc: req.body.task_desc,
+                task_type: req.body.task_type
             }, (err, task) => {
                 if(err) {
                     console.log("Error creating new task");
@@ -101,6 +98,70 @@ export default {
                         .json(task);
                 }
             });
+
+    },
+
+    updateOneTask: (req, res) => {
+
+        let taskId = req.params.taskId;
+        console.log("Your task ID is: " + taskId);
+
+        Task
+            .findById(taskId)
+            .exec((err, task) => {
+                if(err) {
+                    console.log("Something wrong with task id")
+                    res
+                        .status(500)
+                        .json(err);
+                        return;
+                }
+                else if(!task) {
+                    console.log("TaskId not found in database: " + taskId)
+                    res
+                        .status(404)
+                        .json({"message": "Task id not found"});
+                        return;
+                }
+                    task.task_name =  req.body.task_name;
+                    task.task_desc =  req.body.task_desc;
+                    task.task_type =  req.body.task_type;
+                
+                task
+                    .save((err, taskUpdated) => {
+                    if(err) {
+                        res
+                            .status(500)
+                            .json(err)
+                    }
+                    else {
+                        res
+                            .status(200)
+                            .json(taskUpdated)
+                    }
+                })
+            })
+    },
+
+    deleteOneTask: (req, res) => {
+
+        let taskId = req.params.taskId;
+
+        Task
+            .findByIdAndRemove(taskId)
+            .exec((err, task) => {
+                if(err) {
+                    res
+                        .status(404)
+                        .json(err)
+                }
+                else {
+                    console.log("Task has been deleted id: " + taskId);
+                    res
+                        .status(204)
+                        .json();
+                }
+            })
 
     }
 

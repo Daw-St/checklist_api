@@ -13,7 +13,9 @@ router
 
 router
     .route('/tasks/:taskId')
-    .get(tasksController.getOneTask);
+    .get(tasksController.getOneTask)
+    .put(tasksController.updateOneTask)
+    .delete(tasksController.deleteOneTask)
 
 
 export default router;

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dburl = 'mongodb://mo1260_cc_chili:T8p1QIfTH51PPrFC1Pjk@mongo22.mydevil.net:27017/mo1260_cc_chili'
+var dburl = 'mongodb://mo1260_cc_chil:T8p1QIfTH51PPrFC1Pjk@mongo22.mydevil.net:27017/mo1260_cc_chil'
 
 mongoose.connect(dburl);
 mongoose.connection.on('connected', function() {
