@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 let Task = mongoose.model('Task');
+// second way(require export) => import Task from '../data/tasks.model';
 
 export default {
     // Simplest GET example

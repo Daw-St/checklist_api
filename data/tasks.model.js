@@ -18,3 +18,4 @@ var tasksShema = new mongoose.Schema({
 })
 
 mongoose.model('Task', tasksShema, 'tasks');
+// second way(require import) => export default mongoose.model('Task', tasksShema, 'tasks');
