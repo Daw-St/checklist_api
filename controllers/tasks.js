@@ -1,9 +1,9 @@
+import mongoose from 'mongoose';
+let Task = mongoose.model('Task');
+// second way(require export) => import Task from '../data/tasks.model';
 
-const { Task, validate } = require('../models/task')
-
-
-module.exports =  {
-
+export default {
+    // Simplest GET example
     testFunction: (req, res) => {
 
         return res
@@ -49,10 +49,11 @@ module.exports =  {
 
     },
 
-      getOneTask:  (req, res) => {
+    getOneTask: (req, res) => {
 
-         let taskId = req.params.taskId;
+        let taskId = req.params.taskId;
         console.log("Your task ID is: " + taskId);
+
         Task
             .findById(taskId)
             .exec((err, doc) => {
@@ -78,13 +79,12 @@ module.exports =  {
     },
 
     addNewTask: (req, res) => {
-        const { error } = validate(req.body);
-        if(error) return res.status(400).send(error.details[0].message)
+        console.log(req);
         Task
             .create({
                 task_name: req.body.task_name,
                 task_desc: req.body.task_desc,
-                task_state: req.body.task_state
+                task_type: req.body.task_type
             }, (err, task) => {
                 if(err) {
                     console.log("Error creating new task");
@@ -103,9 +103,6 @@ module.exports =  {
     },
 
     updateOneTask: (req, res) => {
-        
-        const { error } = validate(req.body);
-        if(error) return res.status(400).send(error.details[0].message)
 
         let taskId = req.params.taskId;
         console.log("Your task ID is: " + taskId);
@@ -124,12 +121,12 @@ module.exports =  {
                     console.log("TaskId not found in database: " + taskId)
                     res
                         .status(404)
-                        .json({"message": "A task with the given ID was not found"});
+                        .json({"message": "Task id not found"});
                         return;
                 }
                     task.task_name =  req.body.task_name;
                     task.task_desc =  req.body.task_desc;
-                    task.task_state =  req.body.task_state;
+                    task.task_type =  req.body.task_type;
                 
                 task
                     .save((err, taskUpdated) => {
@@ -161,10 +158,9 @@ module.exports =  {
                 }
                 else {
                     console.log("Task has been deleted id: " + taskId);
-                    console.log('task',task);
                     res
-                        .status(200)
-                        .json(task);
+                        .status(204)
+                        .json();
                 }
             })
 
