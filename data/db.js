@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const dburl = 'mongodb://mo1260_cc_chil:T8p1QIfTH51PPrFC1Pjk@mongo22.mydevil.net:27017/mo1260_cc_chil'
+var mongoose = require('mongoose');
+var dburl = 'mongodb://mo1260_cc_chil:T8p1QIfTH51PPrFC1Pjk@mongo22.mydevil.net:27017/mo1260_cc_chil'
 
-mongoose.connect(dburl, { useNewUrlParser : true });
+mongoose.connect(dburl);
 mongoose.connection.on('connected', function() {
     console.log('Mongoose connected to ' + dburl)
 });
@@ -33,4 +33,4 @@ process.once('SIGUSR2', function() {
     });
 });
 
-//require('');
+require('./tasks.model');
