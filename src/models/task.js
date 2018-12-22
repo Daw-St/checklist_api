@@ -16,7 +16,7 @@ const taskSchema = new mongoose.Schema({
         min: 0,
         max: 1,
         "default": 0
-    }
+    },
 })
 
 const Task = mongoose.model('Task', taskSchema, 'tasks');

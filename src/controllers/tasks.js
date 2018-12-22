@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-//const Task = mongoose.model('Task');
+
 const { Task, validate } = require('../models/task')
-// second way(require export) => import Task from '../data/tasks.model';
+
 
 module.exports =  {
-    // Simplest GET example
+
     testFunction: (req, res) => {
 
         return res
@@ -50,7 +50,7 @@ module.exports =  {
 
     },
 
-      getOneTask: async function (req, res) {
+      getOneTask:  (req, res) => {
 
          let taskId = req.params.taskId;
         console.log("Your task ID is: " + taskId);
