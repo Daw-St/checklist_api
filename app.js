@@ -13,7 +13,7 @@ const morgan = require('morgan');
 
 const tasks = require('./src/routes/tasks');
 const users = require('./src/routes/users');
-
+const boards = require('./src/routes/boards')
 
 
 
@@ -27,6 +27,7 @@ app.use(helmet());
 
 app.use('/api/tasks', tasks);
 app.use('/api/users', users);
+app.use('/api/boards', boards);
 
 
 let server = app.listen(app.get('port'), () => {

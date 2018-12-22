@@ -42,9 +42,7 @@ function validateUser(user){
     return Joi.validate(user, schema);
 }
 
-
+exports.userSchema = userSchema;
 exports.validate = validateUser;
 exports.User = User ;
 
-
-// second way(require import) => export default mongoose.model('Task', tasksShema, 'tasks');
