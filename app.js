@@ -1,9 +1,13 @@
-require('babel-core/register');
-import './data/db';
-import express from 'express';
-let app = express();
-import routes from './src/routing';
-import bodyParser from 'body-parser';
+//require('babel-core/register');
+//require('babel-polyfill');
+const Joi = require('joi');
+Joi.ObjectId = require('joi-objectid')(Joi);
+const express = require('express');
+require('./src/data/db')
+const app = express();
+const tasks = require('./src/routes/tasks');
+const bodyParser = require('body-parser');
+const { REFUSED } = require('dns');
 
 app.set('port', 3000);
 
@@ -17,7 +21,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/', routes);
+app.use('/api/tasks', tasks);
 
 let server = app.listen(app.get('port'), () => {
     var port = server.address().port;

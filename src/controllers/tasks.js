@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
-let Task = mongoose.model('Task');
+const mongoose = require('mongoose');
+//const Task = mongoose.model('Task');
+const { Task, validate } = require('../models/task')
 // second way(require export) => import Task from '../data/tasks.model';
 
-export default {
+module.exports =  {
     // Simplest GET example
     testFunction: (req, res) => {
 
@@ -49,11 +50,10 @@ export default {
 
     },
 
-    getOneTask: (req, res) => {
+      getOneTask: async function (req, res) {
 
-        let taskId = req.params.taskId;
+         let taskId = req.params.taskId;
         console.log("Your task ID is: " + taskId);
-
         Task
             .findById(taskId)
             .exec((err, doc) => {
@@ -79,7 +79,8 @@ export default {
     },
 
     addNewTask: (req, res) => {
-        console.log(req);
+        const { error } = validate(req.body);
+        if(error) return res.status(400).send(error.details[0].message)
         Task
             .create({
                 task_name: req.body.task_name,
@@ -103,6 +104,9 @@ export default {
     },
 
     updateOneTask: (req, res) => {
+        
+        const { error } = validate(req.body);
+        if(error) return res.status(400).send(error.details[0].message)
 
         let taskId = req.params.taskId;
         console.log("Your task ID is: " + taskId);
@@ -121,7 +125,7 @@ export default {
                     console.log("TaskId not found in database: " + taskId)
                     res
                         .status(404)
-                        .json({"message": "Task id not found"});
+                        .json({"message": "A task with the given ID was not found"});
                         return;
                 }
                     task.task_name =  req.body.task_name;
@@ -158,9 +162,10 @@ export default {
                 }
                 else {
                     console.log("Task has been deleted id: " + taskId);
+                    console.log('task',task);
                     res
-                        .status(204)
-                        .json();
+                        .status(200)
+                        .json(task);
                 }
             })
 
