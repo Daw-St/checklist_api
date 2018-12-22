@@ -1,16 +1,24 @@
 
 const _ = require('lodash');
 const { User, validate } = require('../models/user')
-
+const objectIdValidator = require('../Validators/objectId');
 
 module.exports =  {
 
     getOneUser: async function(req, res){
+      
         try {
+
+            const { error } = objectIdValidator(req.params.userId);
+            if(error) return res.status(400).send(error.details[0].message);
+
             const user = await User.findById(req.params.userId);
+            if(!user) return res.status(404).send('A user with the given ID was not found.')
             res.send(user)
+            
         } catch (error) {
-            res.send(404)
+
+            res.status(500).send('Error occurred')
         }
     },
 
@@ -19,11 +27,12 @@ module.exports =  {
             const user = await User.find();
             res.send(user)
         } catch (error) {
-            res.send(404)
+            res.status(404).send(error)
         }
     },
 
     registerUser: async function(req, res){
+
         console.log(req.body);
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);

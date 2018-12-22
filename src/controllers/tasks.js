@@ -84,7 +84,7 @@ module.exports =  {
             .create({
                 task_name: req.body.task_name,
                 task_desc: req.body.task_desc,
-                task_type: req.body.task_type
+                task_state: req.body.task_state
             }, (err, task) => {
                 if(err) {
                     console.log("Error creating new task");
@@ -129,7 +129,7 @@ module.exports =  {
                 }
                     task.task_name =  req.body.task_name;
                     task.task_desc =  req.body.task_desc;
-                    task.task_type =  req.body.task_type;
+                    task.task_state =  req.body.task_state;
                 
                 task
                     .save((err, taskUpdated) => {
