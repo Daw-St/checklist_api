@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 
 const { Task, validate } = require('../models/task')
 

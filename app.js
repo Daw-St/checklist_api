@@ -23,10 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 app.use(helmet());
-app.use((req, res, next) => {
-    console.log('type of your method ' + req.method + ' with url: ' + req.url)
-    next();
-})
+
 
 app.use('/api/tasks', tasks);
 app.use('/api/users', users);

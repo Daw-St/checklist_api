@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+
 const _ = require('lodash');
 const { User, validate } = require('../models/user')
 

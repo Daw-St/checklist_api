@@ -20,11 +20,6 @@ router
     //.put(usersController.updateOneTask)
     //.delete(usersController.deleteOneTask)
 
-// router
-//     .route('/:taskId')
-//     .get(usersController.getOneTask)
-//     .put(usersController.updateOneTask)
-//     .delete(usersController.deleteOneTask)
 
 
 module.exports = router;

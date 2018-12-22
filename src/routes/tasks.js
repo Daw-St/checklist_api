@@ -4,9 +4,6 @@ const tasksController = require('../controllers/tasks');
 
 
 
-// router
-//     .route('/')
-//     .get(tasksController.testFunction,a);
 
 // Base route /api/tasks
 
