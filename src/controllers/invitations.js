@@ -44,12 +44,15 @@ module.exports =  {
 
 
     createInvitation: async function(req, res){
-        console.log(req.body);
+
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);
 
         const invitation = new Invitation(_.pick(req.body, ["inviter", "invited", "board_id", "invitation_message","state", "created_At"]));
+        
         const userToInvite = await User.findById(req.body.invited);
+        if(!userToInvite) return res.status(404).send('A user with the given ID was not found.')
+
         userToInvite.invitations.push(invitation._id)
         const invitations = userToInvite.invitations;
 
@@ -83,41 +86,39 @@ module.exports =  {
             
             if(!invitation) return res.status(404).send('A invitation with the given ID was not found.')
 
-            if(invitation.state === 'pending' && req.body.state === 'approved'){
-                
-                const inv = new Invitation({
-                    inviter : req.body.inviter,
-                    invited : req.body.invited,
-                    board_id : req.body.board_id,
-                    invitation_message : req.body.invitation_message ? req.body.invitation_message : invitation.invitation_message,
-                    state : req.body.state ? req.body.state : invitation.state
-                })
-                // invitation.inviter = req.body.inviter;
-                // invitation.invited = req.body.invited;
-                // invitation.board_id = req.body.board_id;
-                // invitation.invitation_message = req.body.invitation_message ? req.body.invitation_message : invitation.invitation_message;
-                // invitation.state = req.body.state ? req.body.state : invitation.state;
+            const inv = new Invitation({
+                inviter : req.body.inviter,
+                invited : req.body.invited,
+                board_id : req.body.board_id,
+                invitation_message : req.body.invitation_message ? req.body.invitation_message : invitation.invitation_message,
+                state : req.body.state ? req.body.state : invitation.state
+            })
 
+            if(invitation.state === 'pending' && req.body.state === 'approved'){
+              
                 const user = await User.findById(invitation.invited);
-                
+              
                 const boardToJoin = await Board.findById(invitation.board_id);
                 boardToJoin.board_members.push(user._id)
-                const boardMembers = boardToJoin.board_members;
+             
                 user.boards.push(invitation.board_id) 
-                const boards = user.boards;
+              
                 const index = user.invitations.indexOf(invitation._id)
 
                 user.invitations.splice(index, 1);
-                const invitations = user.invitations
-
+               
                 try {
                     new Fawn.Task()
                       .update('invitations', {_id: invitation._id},{
-                        invitation : inv
+                        inviter : inv.inviter,
+                        invited: inv.invited,
+                        board_id : inv.board_id,
+                        invitation_message: inv.invitation_message,
+                        state : inv.state
                       })
                       .update('users', { _id: user._id },{
-                        invitations : invitations,
-                        boards: boards
+                        invitations : user.invitations,
+                        boards: user.boards
                     })
                       .update('boards',{_id: boardToJoin._id },{
                         board_members : boardToJoin.board_members
@@ -130,9 +131,33 @@ module.exports =  {
                     res.status(500).send('Something failed.');
                   }
 
+            }else if(invitation.state === 'pending' && req.body.state === 'rejected'){
+                console.log('from rejected');
+
+                const user = await User.findById(invitation.invited);
+                const index = user.invitations.indexOf(invitation._id)
+                user.invitations.splice(index, 1);
+                try {
+                    new Fawn.Task()
+                      .update( 'invitations', { _id : invitation._id},{
+                          inviter : inv.inviter,
+                          invited: inv.invited,
+                          board_id : inv.board_id,
+                          invitation_message: inv.invitation_message,
+                          state : inv.state
+                        }
+                      )
+                      .update('users', { _id: user._id },{
+                        invitations : user.invitations,
+                    })
+                      .run();
+                      res.send(inv);
+                  }
+                  catch(ex) {
+                      console.log(ex);
+                    res.status(500).send('Something failed.');
+                  }
             }
-  
-    
     },
    
 
