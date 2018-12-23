@@ -14,8 +14,17 @@ module.exports =  {
 
             const board = await Board.findById(req.params.boardId)
             .populate('board_members', '_id username email')
-            .populate('board_admins', '_id username')
+            .populate('board_admins', '_id username email')
             .populate('board_tasks', '_id task_name task_desc')
+           // .populate('board_comments', '_id content created_at' )
+           .populate({path: 'board_comments'})
+           //.populate({
+          //  path: 'board_comments',
+            // Get friends of friends - populate the 'friends' array for every friend
+         //   populate: { path: 'sender_id' }
+         // });
+        
+          
             
 
             if(!board) return res.status(404).send('A board with the given ID was not found.')
@@ -47,7 +56,7 @@ module.exports =  {
         
 
 
-        board = new Board(_.pick(req.body, ["board_admins","board_members", "board_title","created_by", "board_desc", "created_At" ]));
+        board = new Board(_.pick(req.body, ["board_admins","board_members", "board_title","created_by", "board_desc" ]));
       
        user.boards.push(board._id);
         console.log(board);

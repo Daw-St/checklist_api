@@ -5,7 +5,7 @@ const invitationsController = require('../controllers/invitations');
 
 
 
-// Base route /api/boards
+// Base route /api/invitations
 
 router
     .route('/')

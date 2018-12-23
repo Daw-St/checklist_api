@@ -1,13 +1,14 @@
 
 const mongoose = require('mongoose');
+const Fawn = require('fawn');
+Fawn.init(mongoose);
 const _ = require('lodash');
 const { Invitation, validate } = require('../models/invitation')
 const { User } = require('../models/user')
 const { Board } = require('../models/board')
 const objectIdValidator = require('../Validators/objectId');
 
-const Fawn = require('fawn');
-Fawn.init(mongoose);
+
 
 module.exports =  {
 
@@ -48,7 +49,7 @@ module.exports =  {
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);
 
-        const invitation = new Invitation(_.pick(req.body, ["inviter", "invited", "board_id", "invitation_message","state", "created_At"]));
+        const invitation = new Invitation(_.pick(req.body, ["inviter", "invited", "board_id", "invitation_message","state"]));
         
         const userToInvite = await User.findById(req.body.invited);
         if(!userToInvite) return res.status(404).send('A user with the given ID was not found.')
@@ -175,17 +176,3 @@ module.exports =  {
 }
 
 
-// try {
-//     new Fawn.Task()
-//       .update('invitations', {_id: invitation._id}, {
-//         invitation
-//       })
-//       .update('users', { _id: userToInvite._id },{ user})
-//       .run();
-  
-//       res.send(_.pick(invitation, ["_id", "inviter","invited", "invitation_message", "state", "created_At"]));
-//   }
-//   catch(ex) {
-//       console.log(ex);
-//     res.status(500).send('Something failed.');
-//   }
