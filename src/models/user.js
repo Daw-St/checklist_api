@@ -20,11 +20,11 @@ const userSchema = new mongoose.Schema({
         maxlength: 1024
     },
     boards: {
-        type: [],
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board'}],
         default: []
     },
     invitations:{
-        type: [],
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Invitation'}],
         default: []
     }
 })

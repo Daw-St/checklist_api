@@ -1,6 +1,7 @@
 
 const _ = require('lodash');
 const { Board, validate } = require('../models/board')
+const { User } = require('../models/user')
 const objectIdValidator = require('../Validators/objectId');
 
 module.exports =  {
@@ -12,7 +13,7 @@ module.exports =  {
             if(error) return res.status(400).send(error.details[0].message);
 
             const board = await Board.findById(req.params.boardId)
-            .populate('board_members', '_id username')
+            .populate('board_members', '_id username email')
             .populate('board_admins', '_id username')
             .populate('board_tasks', '_id task_name task_desc')
             
@@ -37,14 +38,23 @@ module.exports =  {
 
 
     createBoard: async function(req, res){
-        console.log(req.body);
+        console.log('body',req.body);
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);
 
-        board = new Board(_.pick(req.body, ["board_admins","board_members", "board_title", "board_desc", "created_At"]));
+        const user = await User.findById(req.body.created_by);
+        if(!user) return res.status(400).send('Invalid id created_by')
+        
+
+
+        board = new Board(_.pick(req.body, ["board_admins","board_members", "board_title","created_by", "board_desc", "created_At" ]));
+      
+       user.boards.push(board._id);
         console.log(board);
+        
         await board.save();
-        res.send(_.pick(board, ["_id", "board_admins","board_members", "board_title","board_desc", "created_At"]));
+        await user.save();
+        res.send(_.pick(board, ["_id", "board_admins","board_members", "created_by", "board_title","board_desc", "created_At"]));
     },
 
     updateBoard: async function(req, res){

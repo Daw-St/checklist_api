@@ -30,6 +30,7 @@ module.exports =  {
 
         Task
             .find()
+            .populate('task_participatns', '_id username')
             .limit(count)
             .exec((err, tasks) => {
                 let resp = {
@@ -55,6 +56,7 @@ module.exports =  {
         console.log("Your task ID is: " + taskId);
         Task
             .findById(taskId)
+            .populate('task_participatns', '_id username')
             .exec((err, doc) => {
                 let resp = {
                     status: 200,
@@ -84,6 +86,7 @@ module.exports =  {
             .create({
                 task_name: req.body.task_name,
                 task_desc: req.body.task_desc,
+                task_participants: req.body.task_participants,
                 task_state: req.body.task_state
             }, (err, task) => {
                 if(err) {
@@ -129,7 +132,9 @@ module.exports =  {
                 }
                     task.task_name =  req.body.task_name;
                     task.task_desc =  req.body.task_desc;
+                    task.task_participants = req.body.task_participants ? req.body.task_participants : task.task_participants,
                     task.task_state =  req.body.task_state;
+                    
                 
                 task
                     .save((err, taskUpdated) => {

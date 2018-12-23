@@ -14,6 +14,7 @@ const morgan = require('morgan');
 const tasks = require('./src/routes/tasks');
 const users = require('./src/routes/users');
 const boards = require('./src/routes/boards')
+const invitations = require('./src/routes/invitations')
 
 
 
@@ -28,6 +29,7 @@ app.use(helmet());
 app.use('/api/tasks', tasks);
 app.use('/api/users', users);
 app.use('/api/boards', boards);
+app.use('/api/invitations', invitations);
 
 
 let server = app.listen(app.get('port'), () => {
