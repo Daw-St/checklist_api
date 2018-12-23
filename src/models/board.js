@@ -16,6 +16,10 @@ const boardSchema = new mongoose.Schema({
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task'}],
         default: []
     },
+    board_comments:{
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
+        default: []
+    },
     created_by:{
          type: mongoose.Schema.Types.ObjectId,
          ref: 'User',
@@ -48,7 +52,6 @@ function validateBoard(board){
         created_by: Joi.ObjectId().required(),
         board_title: Joi.string().max(30),
         board_desc: Joi.string().max(200),
-        created_At: Joi.date(),
     }
     return Joi.validate(board, schema);
 }

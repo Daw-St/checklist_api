@@ -42,7 +42,7 @@ function validateInvitation(invitation){
         board_id: Joi.ObjectId().required(),
         invitation_message: Joi.string().max(200),
         state: Joi.string().valid(['pending', 'approved', 'rejected']),
-        created_At: Joi.date(),
+
     }
     return Joi.validate(invitation, schema);
 }
