@@ -1,3 +1,6 @@
+
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/users');
@@ -8,13 +11,20 @@ const usersController = require('../controllers/users');
 
 // Base route /api/users
 
+router
+    .route('/me')
+    .get(auth, usersController.getMe)
 
 router
     .route('/')
-    .get(usersController.getAllUsers)
+    .get([auth, admin], usersController.getAllUsers)
     .post(usersController.registerUser);
 
-    router
+
+
+
+router
+    .use(auth)
     .route('/:userId')
     .get(usersController.getOneUser)
     //.put(usersController.updateOneTask)

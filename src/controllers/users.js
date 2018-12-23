@@ -1,14 +1,22 @@
 
+const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const { User, validate } = require('../models/user')
 const objectIdValidator = require('../Validators/objectId');
 
 module.exports =  {
 
-    getOneUser: async function(req, res){
-      
+    getMe: async function (req, res){
         try {
+            const user = await User.findById(req.user._id).select('-password');
+            res.send(user)
+        } catch (error) {
+            res.status(404).send(error)
+        }
+    },
 
+    getOneUser: async function(req, res){
+        try {
             const { error } = objectIdValidator(req.params.userId);
             if(error) return res.status(400).send(error.details[0].message);
 
@@ -41,8 +49,13 @@ module.exports =  {
         if(user.length > 0) return res.status(400).send('User already exist.');
 
         user = new User(_.pick(req.body, ["username", "email","password", "boards", "invitations"]));
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+    
         await user.save();
-        res.send(_.pick(user, ["_id", "username", "email", "boards", "invitations"]));
+        const token = user.generateAuthToken();
+
+        res.header('x-auth-token', token).send(_.pick(user, ["_id", "username", "email", "boards", "invitations"]));
     },
    
 

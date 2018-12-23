@@ -4,13 +4,7 @@ const { Task, validate } = require('../models/task')
 
 module.exports =  {
 
-    testFunction: (req, res) => {
-
-        return res
-                .status(200)
-                .json({message: 'It works!'})
-
-    },
+  
 
     getAllTasks: (req, res) => {
 
