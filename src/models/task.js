@@ -11,6 +11,10 @@ const taskSchema = new mongoose.Schema({
         type: String,
         "default": "No description added"
     },
+    task_participants: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+        default: []
+    },
     task_state: {
         type: String,
         enum: ['toDo', 'doing', 'done'],
@@ -24,6 +28,7 @@ function validateTask(task){
     const schema = {
         task_name: Joi.string().required(),
         task_desc: Joi.string(),
+        task_participants: Joi.array().items(Joi.ObjectId()),
         task_state: Joi.string().valid(['toDo','doing','done']).default('toDo'),
     }
     return Joi.validate(task, schema);
