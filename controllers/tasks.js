@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 let Task = mongoose.model('Task');
 // second way(require export) => import Task from '../data/tasks.model';
 
+/*
 export default {
-    // Simplest GET example
+    Simplest GET example
     testFunction: (req, res) => {
 
         return res
@@ -11,6 +12,11 @@ export default {
                 .json({message: 'It works!'})
 
     },
+
+const { Task, validate } = require('../models/task')
+*/
+
+module.exports =  {
 
     getAllTasks: (req, res) => {
 
@@ -30,6 +36,7 @@ export default {
 
         Task
             .find()
+            .populate('task_participatns', '_id username')
             .limit(count)
             .exec((err, tasks) => {
                 let resp = {
@@ -56,6 +63,7 @@ export default {
 
         Task
             .findById(taskId)
+            .populate('task_participatns', '_id username')
             .exec((err, doc) => {
                 let resp = {
                     status: 200,
@@ -84,7 +92,8 @@ export default {
             .create({
                 task_name: req.body.task_name,
                 task_desc: req.body.task_desc,
-                task_type: req.body.task_type
+                task_participants: req.body.task_participants,
+                task_state: req.body.task_state
             }, (err, task) => {
                 if(err) {
                     console.log("Error creating new task");
@@ -126,7 +135,10 @@ export default {
                 }
                     task.task_name =  req.body.task_name;
                     task.task_desc =  req.body.task_desc;
-                    task.task_type =  req.body.task_type;
+
+                    task.task_participants = req.body.task_participants ? req.body.task_participants : task.task_participants,
+                    task.task_state =  req.body.task_state;
+                    
                 
                 task
                     .save((err, taskUpdated) => {
