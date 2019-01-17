@@ -1,5 +1,8 @@
 
 const { Task, validate } = require('../models/task')
+const { Board } = require('../models/board')
+
+const Fawn = require('fawn');
 
 
 module.exports =  {
@@ -73,29 +76,62 @@ module.exports =  {
             })
     },
 
-    addNewTask: (req, res) => {
+    createTask: async (req, res) => {
+        // const { error } = validate(req.body);
+        // if(error) return res.status(400).send(error.details[0].message)
+        // Task
+        //     .create({
+        //         task_name: req.body.task_name,
+        //         task_desc: req.body.task_desc,
+        //         task_participants: req.body.task_participants,
+        //         task_state: req.body.task_state
+        //     }, (err, task) => {
+        //         if(err) {
+        //             console.log("Error creating new task");
+        //             res
+        //                 .status(400)
+        //                 .json(err)
+        //         }
+        //         else {
+        //             console.log("Task created " + task)
+        //             res
+        //                 .status(200)
+        //                 .json(task);
+        //         }
+        //     });
+
         const { error } = validate(req.body);
-        if(error) return res.status(400).send(error.details[0].message)
-        Task
-            .create({
-                task_name: req.body.task_name,
-                task_desc: req.body.task_desc,
-                task_participants: req.body.task_participants,
-                task_state: req.body.task_state
-            }, (err, task) => {
-                if(err) {
-                    console.log("Error creating new task");
-                    res
-                        .status(400)
-                        .json(err)
-                }
-                else {
-                    console.log("Task created " + task)
-                    res
-                        .status(200)
-                        .json(task);
-                }
-            });
+        if(error) return res.status(400).send(error.details[0].message);
+
+        const board = await Board.findById(req.body.board_id);
+        if(!board) return res.status(400).send('Invalid id board_id')
+
+
+        task = new Task({
+         task_name: req.body.task_name,
+         task_desc: req.body.task_desc,
+         task_state: req.body.task_state,
+         board_id: req.body.board_id
+        })
+
+
+        board.board_tasks.push(task._id);
+
+       
+        try {
+            new Fawn.Task()
+              .save('tasks', task)
+              .update('boards', { _id: board._id },{
+                board_tasks : board.board_tasks
+            })
+              .run();
+              res.send(task);
+          }
+          catch(ex) {
+              console.log(ex);
+            res.status(500).send('Something failed.');
+          }
+
 
     },
 

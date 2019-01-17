@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const Fawn = require('fawn');
+Fawn.init(mongoose);
+
 const dburl = 'mongodb://mo1260_cc_chil:T8p1QIfTH51PPrFC1Pjk@mongo22.mydevil.net:27017/mo1260_cc_chil'
 
 mongoose.connect(dburl, { useNewUrlParser : true });

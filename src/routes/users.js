@@ -17,7 +17,8 @@ router
 
 router
     .route('/')
-    .get([auth, admin], usersController.getAllUsers)
+    //.get([auth, admin], usersController.getAllUsers)
+    .get(auth, usersController.getAllUsers)
     .post(usersController.registerUser);
 
 
