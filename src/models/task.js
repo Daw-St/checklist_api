@@ -20,6 +20,10 @@ const taskSchema = new mongoose.Schema({
         enum: ['toDo', 'doing', 'done'],
         "default": 'toDo'
     },
+    board_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    }
 })
 
 const Task = mongoose.model('Task', taskSchema, 'tasks');
@@ -30,6 +34,7 @@ function validateTask(task){
         task_desc: Joi.string(),
         task_participants: Joi.array().items(Joi.ObjectId()),
         task_state: Joi.string().valid(['toDo','doing','done']).default('toDo'),
+        board_id: Joi.ObjectId().required()
     }
     return Joi.validate(task, schema);
 }

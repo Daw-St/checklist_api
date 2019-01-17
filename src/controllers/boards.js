@@ -13,9 +13,10 @@ module.exports =  {
             if(error) return res.status(400).send(error.details[0].message);
 
             const board = await Board.findById(req.params.boardId)
+            .select('-__v')
             .populate('board_members', '_id username email')
             .populate('board_admins', '_id username email')
-            .populate('board_tasks', '_id task_name task_desc')
+            .populate('board_tasks', '_id task_name task_desc task_state')
            // .populate('board_comments', '_id content created_at' )
            .populate({path: 'board_comments'})
            //.populate({
@@ -36,6 +37,10 @@ module.exports =  {
 
 
     getAllBoards: async function(req, res){
+        
+        if(req.query){
+            console.log(req.query.name);
+        }
         try { 
             const boards = await Board.find();
             res.send(boards);
@@ -47,7 +52,7 @@ module.exports =  {
 
 
     createBoard: async function(req, res){
-        console.log('body',req.body);
+        //console.log('body',req.body);
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);
 
@@ -56,7 +61,16 @@ module.exports =  {
         
 
 
-        board = new Board(_.pick(req.body, ["board_admins","board_members", "board_title","created_by", "board_desc" ]));
+        //board = new Board(_.pick(req.body, ["board_admins","board_members", "board_title","created_by", "board_desc" ]));
+        
+        board = new Board({
+            board_admins: [req.body.created_by],
+            board_members: [req.body.created_by],
+            board_title: req.body.board_title,
+            created_by: req.body.created_by,
+        })
+
+
       
        user.boards.push(board._id);
         console.log(board);

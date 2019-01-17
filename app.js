@@ -7,10 +7,12 @@ const Joi = require('joi');
 Joi.ObjectId = require('joi-objectid')(Joi);
 
 if(!config.get('jwtPrivateKey')){
-    console.log(897789897);
-    console.log('FATAL ERROR: jwtPrivatekey is not defined.');
+    console.log(config);
+    console.log('FATAL ERROR: jwtPrivateKey is not defined.');
     process.exit(1);
 };
+
+
 
 
 const express = require('express');
@@ -20,7 +22,7 @@ const { REFUSED } = require('dns');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const auth = require('./src/routes/auth');
-
+const cors = require('cors')
 
 const tasks = require('./src/routes/tasks');
 const users = require('./src/routes/users');
@@ -32,11 +34,13 @@ const comments = require('./src/routes/comments');
 
 
 
-app.set('port', 3000);
+app.set('port', 5000);
+app.use(cors ({ origin: true, credentials: true }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 app.use(helmet());
+
 
 
 app.use('/api/tasks', tasks);

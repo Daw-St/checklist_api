@@ -13,7 +13,7 @@ router
     .use(auth)
     .route('/')
     .get(tasksController.getAllTasks)
-    .post(tasksController.addNewTask);
+    .post(tasksController.createTask);
 
 router
     .use(auth)

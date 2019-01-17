@@ -7,17 +7,22 @@ const { User } = require('../models/user');
 
 module.exports = {
     auth: async function(req, res){
+        
 
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);
 
        
         let user = await User.findOne().or([{username: req.body.username}, {email: req.body.email}])
+        console.log('auth');
         if(!user) return res.status(400).send('Invalid username or password.')
+        console.log(user);
 
+        console.log('auth');
         console.log(user.password);
         console.log(req.body.password);
         const validPassword = await bcrypt.compare(req.body.password, user.password);
+        console.log(validPassword);
         if(!validPassword) return res.status(400).send('Invalid username or password.');
 
         const token = user.generateAuthToken();
