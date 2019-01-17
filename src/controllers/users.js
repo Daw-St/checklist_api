@@ -8,7 +8,8 @@ module.exports =  {
 
     getMe: async function (req, res){
         try {
-            const user = await User.findById(req.user._id).select('-password');
+            const user = await User.findById(req.user._id).select('-password')
+            .populate('boards', '_id board_title')
             res.send(user)
         } catch (error) {
             res.status(404).send(error)
@@ -31,8 +32,21 @@ module.exports =  {
     },
 
     getAllUsers: async function(req, res){
+
+        console.log(req.query);
+        if(req.query.username){
+            console.log(req.query);
+            let pattern = new RegExp(`^${req.query.username}`, 'i')
+            try {
+                const user = await User.find({username: {$regex: pattern}}).select('-__v -password').populate('invitations', 'state board_id')
+                res.send(user)
+            } catch (error) {
+                res.status(404).send(error)
+            }
+        }
+
         try {
-            const user = await User.find();
+            const user = await User.find().select('-__v -password')
             res.send(user)
         } catch (error) {
             res.status(404).send(error)
@@ -40,7 +54,6 @@ module.exports =  {
     },
 
     registerUser: async function(req, res){
-
         console.log(req.body);
         const { error } = validate(req.body);
         if(error) return res.status(400).send(error.details[0].message);

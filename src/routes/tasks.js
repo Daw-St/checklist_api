@@ -12,12 +12,8 @@ const tasksController = require('../controllers/tasks');
 router
     .use(auth)
     .route('/')
-    .get(tasksController.testFunction);
-
-router
-    .route('/tasks')
     .get(tasksController.getAllTasks)
-    .post(tasksController.addNewTask);
+    .post(tasksController.createTask);
 
 router
     .use(auth)
@@ -27,4 +23,4 @@ router
     .delete(tasksController.deleteOneTask)
 
 
-export default router;
+module.exports = router;

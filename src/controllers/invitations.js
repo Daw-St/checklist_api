@@ -1,7 +1,7 @@
 
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const Fawn = require('fawn');
-Fawn.init(mongoose);
+//Fawn.init(mongoose);
 const _ = require('lodash');
 const { Invitation, validate } = require('../models/invitation')
 const { User } = require('../models/user')

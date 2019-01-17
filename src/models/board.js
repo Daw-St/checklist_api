@@ -46,18 +46,29 @@ const Board = mongoose.model('Board', boardSchema, 'boards');
 
 function validateBoard(board){
     const schema = {
-        board_admins: Joi.array().items(Joi.ObjectId()).required(),
-        board_members: Joi.array().items(Joi.ObjectId()).required(),
+        board_admins: Joi.array().items(Joi.ObjectId()),
+        board_members: Joi.array().items(Joi.ObjectId()),
         board_tasks: Joi.array().items(Joi.ObjectId()),
         created_by: Joi.ObjectId().required(),
-        board_title: Joi.string().max(30),
+        board_title: Joi.string().max(30).required(),
         board_desc: Joi.string().max(200),
     }
     return Joi.validate(board, schema);
 }
 
+// function validateBoard(board){
+//     const schema = {
+//         board_admins: Joi.array().items(Joi.ObjectId()).required(),
+//         board_members: Joi.array().items(Joi.ObjectId()).required(),
+//         board_tasks: Joi.array().items(Joi.ObjectId()),
+//         created_by: Joi.ObjectId().required(),
+//         board_title: Joi.string().max(30),
+//         board_desc: Joi.string().max(200),
+//     }
+//     return Joi.validate(board, schema);
+// }
+
+
 exports.validate = validateBoard;
 exports.Board = Board ;
-
-//comment
 
