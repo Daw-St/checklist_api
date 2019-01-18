@@ -33,23 +33,25 @@ module.exports =  {
 
     getAllUsers: async function(req, res){
 
-        console.log(req.query);
+  
         if(req.query.username){
-            console.log(req.query);
-            let pattern = new RegExp(`^${req.query.username}`, 'i')
+           
+            
             try {
+                let pattern = new RegExp(`^${req.query.username}`, 'i')
                 const user = await User.find({username: {$regex: pattern}}).select('-__v -password').populate('invitations', 'state board_id')
-                res.send(user)
+                return res.send(user)
+                
             } catch (error) {
-                res.status(404).send(error)
+                return res.status(404).send(error)
             }
         }
 
         try {
             const user = await User.find().select('-__v -password')
-            res.send(user)
+            return res.send(user)
         } catch (error) {
-            res.status(404).send(error)
+            return res.status(404).send(error)
         }
     },
 
