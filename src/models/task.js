@@ -33,7 +33,7 @@ function validateTask(task){
         task_name: Joi.string().required(),
         task_desc: Joi.string(),
         task_participants: Joi.array().items(Joi.ObjectId()),
-        task_state: Joi.string().valid(['toDo','doing','done']).default('toDo'),
+        task_state: Joi.string().valid(['toDo','doing','done']).required(),
         board_id: Joi.ObjectId().required()
     }
     return Joi.validate(task, schema);
