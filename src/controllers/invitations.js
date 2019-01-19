@@ -51,9 +51,21 @@ module.exports =  {
 
         const invitation = new Invitation(_.pick(req.body, ["inviter", "invited", "board_id", "invitation_message","state"]));
         
-        const userToInvite = await User.findById(req.body.invited);
+        const userToInvite = await User.findById(req.body.invited).populate('invitations', '-_id board_id')
+        //if(userToInvite)
         if(!userToInvite) return res.status(404).send('A user with the given ID was not found.')
 
+        userToInvite.invitations.forEach(inv => {
+            if(inv.board_id.toString() === invitation.board_id.toString()){
+                
+                console.log('invited');
+                res.status(400).send('A user with the given ID has been invited to this board already')
+            }
+          
+            inv.board_id === invitation.board_id? console.log('equals') : console.log('not equals')
+        })
+
+      
         userToInvite.invitations.push(invitation._id)
         const invitations = userToInvite.invitations;
 

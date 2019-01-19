@@ -14,15 +14,11 @@ module.exports = {
 
        
         let user = await User.findOne().or([{username: req.body.username}, {email: req.body.email}])
-        console.log('auth');
+        
         if(!user) return res.status(400).send('Invalid username or password.')
-        console.log(user);
-
-        console.log('auth');
-        console.log(user.password);
-        console.log(req.body.password);
+        
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-        console.log(validPassword);
+        
         if(!validPassword) return res.status(400).send('Invalid username or password.');
 
         const token = user.generateAuthToken();
@@ -33,7 +29,6 @@ module.exports = {
 
 
 function validate(req){
-    console.log(req);
     const schema = Joi.object().keys({
         username: Joi.string().min(4).max(16),
         email: Joi.string().email(),
