@@ -39,7 +39,7 @@ module.exports =  {
                     resp.status = 500
                     resp.json = err;
                 }
-                console.log("Found tasks", tasks.length);
+                //console.log("Found tasks", tasks.length);
                 res
                     .status(resp.status)
                     .json(resp.message);
@@ -77,6 +77,7 @@ module.exports =  {
     },
 
     createTask: async (req, res) => {
+        
         // const { error } = validate(req.body);
         // if(error) return res.status(400).send(error.details[0].message)
         // Task
@@ -117,7 +118,8 @@ module.exports =  {
 
         board.board_tasks.push(task._id);
 
-       
+        console.log('task create');
+      
         try {
             new Fawn.Task()
               .save('tasks', task)
@@ -128,7 +130,7 @@ module.exports =  {
               res.send(task);
           }
           catch(ex) {
-              console.log(ex);
+              //console.log(ex);
             res.status(500).send('Something failed.');
           }
 

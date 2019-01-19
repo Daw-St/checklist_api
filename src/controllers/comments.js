@@ -11,7 +11,6 @@ const Fawn = require('fawn');
 module.exports = {
 
     getAllComments: async function (req, res) {
-        console.log('comm');
         const comments = await Comment.find();
         if(!comments) return res.status(400).send('No comments were found.');
         res.send(comments);   
@@ -33,7 +32,9 @@ module.exports = {
         })
         const board = await Board.findById(req.body.board_id);
         if(!board) return res.status(400).send('Invalid board_id');
+
         board.board_comments.push(comment._id);
+
 
         try {
             new Fawn.Task()

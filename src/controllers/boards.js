@@ -28,6 +28,7 @@ module.exports =  {
           
             
 
+         console.log('fetch board');
             if(!board) return res.status(404).send('A board with the given ID was not found.')
             res.send(board);
         } catch (error) {
@@ -73,7 +74,7 @@ module.exports =  {
 
       
        user.boards.push(board._id);
-        console.log(board);
+        
         
         await board.save();
         await user.save();
